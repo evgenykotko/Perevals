@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework.reverse import reverse
@@ -33,13 +34,21 @@ class PerevalAddedViewset(viewsets.ModelViewSet):
     def list_sd(self, request, *args, **kwargs):
         return Response({'message': 'Заполните поля и отправьте данные на сервер'})
 
+    def retrieve(self, request, pk=None):
+        queryset = PerevalAdded.objects.all()
+        pereval = get_object_or_404(queryset, pk=pk)
+        serializer = PerevalAddedSerializer(pereval)
+        return Response(serializer.data)
+
     def create(self, request, *args, **kwargs):
         serializer = PerevalAddedSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             resp = Response(serializer.data, status=status.HTTP_200_OK)
-            print(dict(serializer.data))
-            msg_resp = f"'status': '{resp.status_code}', 'message': '{resp.status_text}', 'id': '{dict(serializer.data).get('id')}'"
+            rsc = resp.status_code
+            rct = resp.status_text
+            pid = dict(serializer.data).get('id')
+            msg_resp = f"'status': '{rsc}', 'message': '{rct}', 'id': '{pid}'"
             return Response(msg_resp)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

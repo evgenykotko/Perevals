@@ -2,22 +2,25 @@ from .models import *
 from rest_framework import serializers
 
 
-
 class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
         fields = ['email', 'fam', 'name', 'otc', 'phone']
+
+
 class LevelSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Level
         fields = ['winter', 'summer', 'autumn', 'spring']
 
+
 class CoordSerializer(serializers.ModelSerializer):
     class Meta:
         model = Coord
         fields = ['latitude', 'longitude', 'height']
+
 
 class PerevalImagesSerializer(serializers.ModelSerializer):
 
@@ -25,11 +28,13 @@ class PerevalImagesSerializer(serializers.ModelSerializer):
         model = PerevalImages
         fields = ['date_added', 'title', 'img']
 
+
 class PerevalAddedSerializer(serializers.ModelSerializer):
     coord_id = CoordSerializer()
     user_id = UserSerializer()
     level_id = LevelSerializer()
     images_id = PerevalImagesSerializer()
+
     class Meta:
         model = PerevalAdded
         fields = [
@@ -58,13 +63,4 @@ class PerevalAddedSerializer(serializers.ModelSerializer):
         images = PerevalImages.objects.create(**images_data)
         pereval = PerevalAdded.objects.create(coord_id=coords, user_id=user, level_id=level, images_id=images, **validated_data)
         return pereval
-
-#
-# class PerevalAddedSerializer(serializers.ModelSerializer):
-#     raw_data = PerevalSerializer
-#     images = ImagesSerializer
-#
-#     class Meta:
-#         model = PerevalAdded
-#         fields = '__all__'
 
