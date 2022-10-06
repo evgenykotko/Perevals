@@ -1,8 +1,8 @@
 from django.db import models
 
 
-class Add_user(models.Model):
-    email = models.EmailField()
+class User(models.Model):
+    email = models.EmailField(unique=True)
     fam = models.CharField(max_length=50)
     name = models.CharField(max_length=50)
     otc = models.CharField(max_length=50)
@@ -24,27 +24,11 @@ class Level(models.Model):
 
 class PerevalImages(models.Model):
     date_added = models.DateTimeField(auto_now_add=True)
+    title = models.CharField(max_length=20)
     img = models.BinaryField()
 
     class Meta:
         db_table = 'pereval_images'
-
-
-class Images(models.Model):
-    data = models.CharField(max_length=20)
-    title = models.CharField(max_length=20)
-
-
-class Pereval(models.Model):
-    beauty_title = models.CharField(max_length=255)
-    title = models.CharField(max_length=255, unique=True)
-    other_title = models.CharField(max_length=255)
-    connect = models.TextField(default='')
-    add_time = models.DateTimeField(auto_now_add=True)
-    coords = models.ForeignKey(Coord, related_name='coords', on_delete=models.CASCADE)
-    user = models.ForeignKey(Add_user, related_name='user', on_delete=models.CASCADE)
-    level = models.ForeignKey(Level, related_name='level', on_delete=models.CASCADE)
-    images = models.ForeignKey(Images, related_name='images', on_delete=models.CASCADE)
 
 
 class PerevalAdded(models.Model):
@@ -58,9 +42,16 @@ class PerevalAdded(models.Model):
         (accepted, 'Модерация прошла успешно'),
         (rejected, 'Модерация прошла, информация не принята'),
     ]
-    date_added = models.DateTimeField(auto_now_add=True)
-    raw_data = models.JSONField()
-    images = models.JSONField(null=True)
+    date_added = models.DateField(auto_now_add=True)
+    beauty_title = models.CharField(max_length=255)
+    title = models.CharField(max_length=255, unique=True)
+    other_title = models.CharField(max_length=255)
+    connect = models.TextField(default='')
+    add_time = models.TimeField(auto_now_add=True)
+    user_id = models.ForeignKey(User, related_name='user_id', on_delete=models.CASCADE)
+    coord_id = models.ForeignKey(Coord, related_name='coords_id', on_delete=models.CASCADE)
+    level_id = models.ForeignKey(Level, related_name='level_id', on_delete=models.CASCADE)
+    images_id = models.ForeignKey(PerevalImages, related_name='images_id', on_delete=models.CASCADE)
     status = models.CharField(max_length=3, choices=STATUS_MODERATE, default=new)
 
     class Meta:

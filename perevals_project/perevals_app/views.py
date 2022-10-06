@@ -6,9 +6,9 @@ from .serializers import *
 from .models import *
 
 
-class AddUserViewset(viewsets.ModelViewSet):
-    queryset = Add_user.objects.all()
-    serializer_class = Add_userSerializer
+class UserViewset(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
 
 
 class CoordViewset(viewsets.ModelViewSet):
@@ -21,32 +21,27 @@ class LevelViewset(viewsets.ModelViewSet):
     serializer_class = LevelSerializer
 
 
-class ImagesViewset(viewsets.ModelViewSet):
-    queryset = Images.objects.all()
-    serializer_class = ImagesSerializer
-
-
-class PerevalViewset(viewsets.ModelViewSet):
-    queryset = Pereval.objects.all()
-    serializer_class = PerevalSerializer
-
-    def list_sd(self, request, *args, **kwargs):
-        return Response({'message': 'Заполните поля и отправьте данные на сервер'})
-
-    def create(self, request, *args, **kwargs):
-        serializer = PerevalSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            pereval_add = PerevalAdded.objects.create(raw_data=serializer.data)
-            resp = Response(serializer.data, status=status.HTTP_200_OK)
-            msg_resp = f"'status': '{resp.status_code}', 'message': '{resp.status_text}', 'id': '{pereval_add.id}'"
-            return Response(msg_resp)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+class PerevalImagesViewset(viewsets.ModelViewSet):
+    queryset = PerevalImages.objects.all()
+    serializer_class = PerevalImagesSerializer
 
 
 class PerevalAddedViewset(viewsets.ModelViewSet):
     queryset = PerevalAdded.objects.all()
     serializer_class = PerevalAddedSerializer
+
+    def list_sd(self, request, *args, **kwargs):
+        return Response({'message': 'Заполните поля и отправьте данные на сервер'})
+
+    def create(self, request, *args, **kwargs):
+        serializer = PerevalAddedSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            resp = Response(serializer.data, status=status.HTTP_200_OK)
+            print(dict(serializer.data))
+            msg_resp = f"'status': '{resp.status_code}', 'message': '{resp.status_text}', 'id': '{dict(serializer.data).get('id')}'"
+            return Response(msg_resp)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET'])

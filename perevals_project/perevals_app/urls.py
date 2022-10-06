@@ -3,7 +3,7 @@ from . import views
 from .views import *
 from rest_framework.urlpatterns import format_suffix_patterns
 
-submitData = PerevalViewset.as_view({
+submitData = PerevalAddedViewset.as_view({
     'get': 'list_sd',
     'post': 'create'
 })
@@ -12,7 +12,7 @@ pereval = PerevalAddedViewset.as_view({
     'get': 'list'
 })
 
-pereval_details = PerevalViewset.as_view({
+pereval_details = PerevalAddedViewset.as_view({
     'get': 'retrieve',
     'put': 'update',
     'patch': 'partial_update',
