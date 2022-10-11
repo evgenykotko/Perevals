@@ -2,38 +2,55 @@ from .models import *
 from rest_framework import serializers
 
 
-class UserSerializer(serializers.ModelSerializer):
+class CoordSerialiser(serializers.ModelSerializer):
+
+    class Meta:
+        model = Coord
+        fields = [
+            'latitude',
+            'longitude',
+            'height'
+        ]
+
+class UserSerialiser(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['email', 'fam', 'name', 'otc', 'phone']
+        fields = [
+            'email',
+            'fam',
+            'name',
+            'otc',
+            'phone'
+        ]
 
-
-class LevelSerializer(serializers.ModelSerializer):
+class LevelSerialiser(serializers.ModelSerializer):
 
     class Meta:
         model = Level
-        fields = ['winter', 'summer', 'autumn', 'spring']
+        fields = [
+            'winter',
+            'summer',
+            'autumn',
+            'spring'
+        ]
 
-
-class CoordSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Coord
-        fields = ['latitude', 'longitude', 'height']
-
-
-class PerevalImagesSerializer(serializers.ModelSerializer):
+class ImageSerialiser(serializers.ModelSerializer):
 
     class Meta:
         model = PerevalImages
-        fields = ['date_added', 'title', 'img']
+        fields = [
+            'date_added',
+            'title',
+            'img',
+        ]
 
 
-class PerevalAddedSerializer(serializers.ModelSerializer):
-    coord_id = CoordSerializer()
-    user_id = UserSerializer()
-    level_id = LevelSerializer()
-    images_id = PerevalImagesSerializer()
+class PerevalSerializer(serializers.ModelSerializer):
+    coord_id = CoordSerialiser()
+    level_id = LevelSerialiser()
+    user_id = UserSerialiser()
+    image_id = ImageSerialiser()
 
     class Meta:
         model = PerevalAdded
@@ -48,19 +65,42 @@ class PerevalAddedSerializer(serializers.ModelSerializer):
             'user_id',
             'coord_id',
             'level_id',
-            'images_id',
-            'status',
+            'image_id',
+            'status'
         ]
+class PerevalAddSerializer(serializers.ModelSerializer):
+    coord_id = CoordSerialiser()
+    level_id = LevelSerialiser()
+    image_id = ImageSerialiser()
 
+    class Meta:
+        model = PerevalAdded
+        fields = [
+            'id',
+            'date_added',
+            'beauty_title',
+            'title',
+            'other_title',
+            'connect',
+            'add_time',
+            'user_id',
+            'coord_id',
+            'level_id',
+            'image_id',
+            'status'
+        ]
     def create(self, validated_data):
         coord_data = validated_data.pop('coord_id')
-        user_data = validated_data.pop('user_id')
+        coord = Coord.objects.create(**coord_data)
         level_data = validated_data.pop('level_id')
-        images_data = validated_data.pop('images_id')
-        coords = Coord.objects.create(**coord_data)
-        user = User.objects.create(**user_data)
         level = Level.objects.create(**level_data)
-        images = PerevalImages.objects.create(**images_data)
-        pereval = PerevalAdded.objects.create(coord_id=coords, user_id=user, level_id=level, images_id=images, **validated_data)
-        return pereval
+        image_data = validated_data.pop('image_id')
+        image = PerevalImages.objects.create(**image_data)
+        return PerevalAdded.objects.create(coord_id=coord, level_id=level, image_id=image, **validated_data)
 
+    def update(self, instance, validated_data):
+        instance.coord_id = validated_data.get('coord_id', instance.coord_id)
+        instance.level_id = validated_data.get('level_id', instance.level_id)
+        instance.image_id = validated_data.get('image_id', instance.image_id)
+        instance.save()
+        return instance
