@@ -21,7 +21,7 @@ class UserSerialiser(serializers.ModelSerializer):
             'fam',
             'name',
             'otc',
-            'phone'
+            'phone',
         ]
 
 class LevelSerialiser(serializers.ModelSerializer):
@@ -47,10 +47,10 @@ class ImageSerialiser(serializers.ModelSerializer):
 
 
 class PerevalSerializer(serializers.ModelSerializer):
-    coord_id = CoordSerialiser()
-    level_id = LevelSerialiser()
-    user_id = UserSerialiser()
-    image_id = ImageSerialiser()
+    coord_id = CoordSerialiser(read_only=True)
+    level_id = LevelSerialiser(read_only=True)
+    user_id = UserSerialiser(read_only=True)
+    image_id = ImageSerialiser(read_only=True)
 
     class Meta:
         model = PerevalAdded
@@ -104,3 +104,5 @@ class PerevalAddSerializer(serializers.ModelSerializer):
         instance.image_id = validated_data.get('image_id', instance.image_id)
         instance.save()
         return instance
+
+

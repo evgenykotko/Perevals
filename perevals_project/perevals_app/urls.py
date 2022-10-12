@@ -12,5 +12,7 @@ urlpatterns = [
     path('', PerevalListView.as_view()),
     path('submitData/', PerevalCreateView.as_view()),
     path('submitData/<int:pk>/', PerevalDetailView.as_view()),
-    path('user/', UserView.as_view())
+    path('user/', UserView.as_view()),
+    path('user/<int:pk>', UserDetail.as_view()),
+    path('user/?email=<email>/', UserFilter.as_view())
 ]

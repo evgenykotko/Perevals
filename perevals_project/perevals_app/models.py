@@ -59,6 +59,8 @@ class PerevalAdded(models.Model):
 
     class Meta:
         db_table = 'pereval_added'
+    def __str__(self):
+        return f'{self.title}'
 
 
 class PerevalAreas(models.Model):
