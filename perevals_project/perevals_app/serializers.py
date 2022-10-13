@@ -15,7 +15,7 @@ class CoordSerialiser(serializers.ModelSerializer):
 class UserSerialiser(serializers.ModelSerializer):
 
     class Meta:
-        model = User
+        model = PerevalUser
         fields = [
             'email',
             'fam',
@@ -46,11 +46,11 @@ class ImageSerialiser(serializers.ModelSerializer):
         ]
 
 
-class PerevalSerializer(serializers.ModelSerializer):
+class PerevalFullViewSerializer(serializers.ModelSerializer):
     coord_id = CoordSerialiser(read_only=True)
     level_id = LevelSerialiser(read_only=True)
-    user_id = UserSerialiser(read_only=True)
     image_id = ImageSerialiser(read_only=True)
+    user_id = UserSerialiser(read_only=True)
 
     class Meta:
         model = PerevalAdded
@@ -68,7 +68,8 @@ class PerevalSerializer(serializers.ModelSerializer):
             'image_id',
             'status'
         ]
-class PerevalAddSerializer(serializers.ModelSerializer):
+
+class PerevalSerializer(serializers.ModelSerializer):
     coord_id = CoordSerialiser()
     level_id = LevelSerialiser()
     image_id = ImageSerialiser()
@@ -89,6 +90,7 @@ class PerevalAddSerializer(serializers.ModelSerializer):
             'image_id',
             'status'
         ]
+
     def create(self, validated_data):
         coord_data = validated_data.pop('coord_id')
         coord = Coord.objects.create(**coord_data)
@@ -99,9 +101,19 @@ class PerevalAddSerializer(serializers.ModelSerializer):
         return PerevalAdded.objects.create(coord_id=coord, level_id=level, image_id=image, **validated_data)
 
     def update(self, instance, validated_data):
-        instance.coord_id = validated_data.get('coord_id', instance.coord_id)
-        instance.level_id = validated_data.get('level_id', instance.level_id)
-        instance.image_id = validated_data.get('image_id', instance.image_id)
+        coord_id = instance.coord_id
+        image_id = instance.image_id
+        level_id = instance.level_id
+        coord_id.save()
+        level_id.save()
+        image_id.save()
+        instance.date_added = validated_data.get('date_added', instance.date_added)
+        instance.beauty_title = validated_data.get('beauty_title', instance.beauty_title)
+        instance.title = validated_data.get('title', instance.title)
+        instance.other_title = validated_data.get('other_title', instance.other_title)
+        instance.connect = validated_data.get('connect', instance.connect)
+        instance.add_time = validated_data.get('add_time', instance.add_time)
+        instance.status = validated_data.get('status', instance.status)
         instance.save()
         return instance
 

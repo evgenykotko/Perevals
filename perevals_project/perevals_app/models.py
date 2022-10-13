@@ -9,10 +9,10 @@ class Coord(models.Model):
 
 
 class Level(models.Model):
-    winter = models.CharField(max_length=10, default='')
-    summer = models.CharField(max_length=10, default='')
-    autumn = models.CharField(max_length=10, default='')
-    spring = models.CharField(max_length=10, default='')
+    winter = models.CharField(max_length=10, blank=True, default='')
+    summer = models.CharField(max_length=10, blank=True, default='')
+    autumn = models.CharField(max_length=10, blank=True, default='')
+    spring = models.CharField(max_length=10, blank=True, default='')
 
 
 class PerevalImages(models.Model):
@@ -24,7 +24,7 @@ class PerevalImages(models.Model):
         db_table = 'pereval_images'
 
 
-class User(models.Model):
+class PerevalUser(models.Model):
     email = models.EmailField(unique=True)
     fam = models.CharField(max_length=50)
     name = models.CharField(max_length=50)
@@ -49,9 +49,9 @@ class PerevalAdded(models.Model):
     beauty_title = models.CharField(max_length=255)
     title = models.CharField(max_length=255, unique=True)
     other_title = models.CharField(max_length=255)
-    connect = models.TextField(default='')
+    connect = models.TextField(blank=True, default='')
     add_time = models.TimeField(auto_now_add=True)
-    user_id = models.ForeignKey(User, related_name='perevals', on_delete=models.CASCADE)
+    user_id = models.ForeignKey(PerevalUser, related_name='perevals', on_delete=models.CASCADE)
     coord_id = models.ForeignKey(Coord, related_name='coords', on_delete=models.CASCADE)
     level_id = models.ForeignKey(Level, related_name='levels', on_delete=models.CASCADE)
     image_id = models.ForeignKey(PerevalImages, related_name='images', on_delete=models.CASCADE)
