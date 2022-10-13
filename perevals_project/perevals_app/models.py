@@ -1,7 +1,6 @@
 from django.db import models
 
 
-
 class Coord(models.Model):
     latitude = models.FloatField()
     longitude = models.FloatField()
@@ -34,6 +33,7 @@ class PerevalUser(models.Model):
     def __str__(self):
         return f'{self.email}'
 
+
 class PerevalAdded(models.Model):
     new = 'new'
     pending = 'pen'
@@ -59,6 +59,7 @@ class PerevalAdded(models.Model):
 
     class Meta:
         db_table = 'pereval_added'
+
     def __str__(self):
         return f'{self.title}'
 

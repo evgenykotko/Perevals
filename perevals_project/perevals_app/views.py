@@ -3,7 +3,6 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework.reverse import reverse
 from rest_framework import viewsets, status, generics
-
 from .serializers import *
 from .models import *
 
@@ -76,6 +75,7 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerialiser
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['email']
+
 
 @api_view(['GET'])
 def api_root(request, format=None):

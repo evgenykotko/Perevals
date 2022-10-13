@@ -12,6 +12,7 @@ class CoordSerialiser(serializers.ModelSerializer):
             'height'
         ]
 
+
 class UserSerialiser(serializers.ModelSerializer):
 
     class Meta:
@@ -24,6 +25,7 @@ class UserSerialiser(serializers.ModelSerializer):
             'phone',
         ]
 
+
 class LevelSerialiser(serializers.ModelSerializer):
 
     class Meta:
@@ -34,6 +36,7 @@ class LevelSerialiser(serializers.ModelSerializer):
             'autumn',
             'spring'
         ]
+
 
 class ImageSerialiser(serializers.ModelSerializer):
 
@@ -68,6 +71,7 @@ class PerevalFullViewSerializer(serializers.ModelSerializer):
             'image_id',
             'status'
         ]
+
 
 class PerevalSerializer(serializers.ModelSerializer):
     coord_id = CoordSerialiser()
